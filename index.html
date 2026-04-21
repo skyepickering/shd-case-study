@@ -1,1 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study — Ember & Oak | Sky High Designs</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --near-black: #080810;
+    --dark: #0c0c18;
+    --surface: #111120;
+    --surface2: #161628;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(41,128,255,0.2);
+    --blue: #2980FF;
+    --blue-bright: #4da3ff;
+    --blue-dim: rgba(41,128,255,0.12);
+    --blue-mid: rgba(41,128,255,0.25);
+    --white: #ffffff;
+    --off-white: #e8eaf0;
+    --muted: #6b7280;
+    --green: #10b981;
+    --green-dim: rgba(16,185,129,0.1);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.1);
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND TEXTURE ─────────────────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(41,128,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 80%, rgba(41,128,255,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ─────────────────────────────────────────────────────────── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,8,16,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-logo-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .nav-brand span { color: var(--blue); }
+
+  .nav-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 3px;
+  }
+
+  /* ── HERO ────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    padding: 100px 32px 80px;
+    text-align: center;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.008) 40px,
+        rgba(255,255,255,0.008) 41px
+      );
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-dim);
+    border: 1px solid var(--border2);
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 32px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--blue);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(42px, 8vw, 80px);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .hero-title span { color: var(--blue); }
+
+  .hero-subtitle {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: clamp(16px, 3vw, 22px);
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 48px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+
+  .hero-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 32px;
+    text-align: center;
+    min-width: 160px;
+  }
+
+  .hero-stat:first-child { border-radius: 4px 0 0 4px; }
+  .hero-stat:last-child { border-radius: 0 4px 4px 0; }
+
+  .hero-stat-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .hero-stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── CONTENT WRAPPER ─────────────────────────────────────────────── */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── META TABLE ──────────────────────────────────────────────────── */
+  .meta-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 80px;
+  }
+
+  .meta-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .meta-row:last-child { border-bottom: none; }
+
+  .meta-label {
+    background: var(--surface2);
+    padding: 14px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    border-right: 1px solid var(--border);
+  }
+
+  .meta-value {
+    padding: 14px 20px;
+    font-size: 14px;
+    color: var(--off-white);
+  }
+
+  .meta-value.highlight {
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* ── SECTION ─────────────────────────────────────────────────────── */
+  .section { margin-bottom: 80px; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .section-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--white);
+  }
+
+  .section-rule {
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+    margin-bottom: 32px;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-dim);
+    border: 1px solid var(--border2);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+
+  p {
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  /* ── PROBLEM LIST ────────────────────────────────────────────────── */
+  .problem-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0;
+    padding: 24px 28px;
+    margin: 24px 0;
+  }
+
+  .problem-list h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+
+  .problem-list ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .problem-list ul li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+  }
+
+  .problem-list ul li::before {
+    content: '✕';
+    color: var(--red);
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── SCREENSHOT PLACEHOLDER ──────────────────────────────────────── */
+  .screenshot-box {
+    background: var(--surface);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 50px 20px;
+    text-align: center;
+    margin: 24px 0;
+  }
+
+  .screenshot-box .icon { font-size: 32px; margin-bottom: 10px; }
+
+  .screenshot-box p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* ── EXECUTION TABLE ─────────────────────────────────────────────── */
+  .execution-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 24px 0;
+  }
+
+  .execution-header {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .execution-header div {
+    padding: 12px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  .execution-header div:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  .execution-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .execution-row:last-child { border-bottom: none; }
+
+  .execution-label {
+    padding: 18px 20px;
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue-bright);
+    border-right: 1px solid var(--border);
+    background: var(--blue-dim);
+  }
+
+  .execution-text {
+    padding: 18px 20px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+  }
+
+  /* ── RESULTS TABLE ───────────────────────────────────────────────── */
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .results-table thead tr {
+    background: var(--near-black);
+  }
+
+  .results-table thead th {
+    padding: 14px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-table thead th:nth-child(1) { color: var(--muted); }
+  .results-table thead th:nth-child(2) { color: var(--red); }
+  .results-table thead th:nth-child(3) { color: var(--green); }
+
+  .results-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .results-table tbody tr:last-child { border-bottom: none; }
+  .results-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  .results-table tbody td {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+
+  .results-table tbody td:nth-child(1) {
+    color: var(--off-white);
+    font-weight: 600;
+    font-family: 'Barlow Semi Condensed', sans-serif;
+  }
+
+  .results-table tbody td:nth-child(2) {
+    color: var(--red);
+    background: var(--red-dim);
+  }
+
+  .results-table tbody td:nth-child(3) {
+    color: var(--green);
+    background: var(--green-dim);
+    font-weight: 700;
+  }
+
+  /* ── QUOTE ───────────────────────────────────────────────────────── */
+  .quote-block {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    border-radius: 0 6px 6px 0;
+    padding: 36px 36px 36px 44px;
+    margin: 0;
+  }
+
+  .quote-mark {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 60px;
+    font-weight: 900;
+    color: var(--blue);
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .quote-text {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--off-white);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .quote-author {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+
+  .quote-role {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .quote-role a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  /* ── LESSONS ─────────────────────────────────────────────────────── */
+  .lesson-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .lesson-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--blue);
+    opacity: 0.3;
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 36px;
+  }
+
+  .lesson-content h4 {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .lesson-content p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  /* ── CTA ─────────────────────────────────────────────────────────── */
+  .cta-block {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 80px;
+  }
+
+  .cta-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 100%, rgba(41,128,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-block h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 12px;
+    line-height: 1;
+    position: relative;
+  }
+
+  .cta-block h2 span { color: var(--blue); }
+
+  .cta-block p {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--blue);
+    color: var(--white);
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 16px 36px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .cta-btn:hover {
+    background: var(--blue-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(41,128,255,0.35);
+  }
+
+  .cta-btn-arrow {
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  /* ── FOOTER NOTE ─────────────────────────────────────────────────── */
+  .footer-note {
+    text-align: center;
+    padding: 40px 32px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── DIVIDER ─────────────────────────────────────────────────────── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 48px 0;
+  }
+
+  /* ── CHALLENGE CALLOUT ───────────────────────────────────────────── */
+  .challenge-callout {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 32px 36px;
+    margin-bottom: 80px;
+    overflow: hidden;
+  }
+
+  .challenge-callout::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--blue), transparent);
+  }
+
+  .challenge-callout::after {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(41,128,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .challenge-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .challenge-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    background: var(--blue);
+  }
+
+  .challenge-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .challenge-text span {
+    color: var(--blue);
+  }
+
+  /* ── STATS BAR ───────────────────────────────────────────────────── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-bottom: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .stat-item {
+    background: var(--surface);
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .stat-item:hover { background: var(--surface2); }
+
+  .stat-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20%; right: 20%;
+    height: 2px;
+    background: var(--blue);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .stat-item:hover::after { opacity: 1; }
+
+  .stat-arrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .stat-arrow.negative { color: var(--red); }
+
+  .stat-big {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 38px;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── TIMELINE ────────────────────────────────────────────────────── */
+  .timeline-wrapper {
+    margin: 24px 0 0;
+  }
+
+  .timeline-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+  }
+
+  .timeline-track::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue), rgba(41,128,255,0.2));
+    z-index: 0;
+  }
+
+  .timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: 0 8px;
+  }
+
+  .timeline-dot {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 14px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .timeline-step.active .timeline-dot {
+    background: var(--blue-dim);
+    border-color: var(--blue);
+    box-shadow: 0 0 20px rgba(41,128,255,0.2);
+  }
+
+  .timeline-week {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+
+  .timeline-phase {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .timeline-detail {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .timeline-milestone {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .milestone-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex-shrink: 0;
+  }
+
+  /* ── SERVICES USED ───────────────────────────────────────────────── */
+  .services-used {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-top: 80px;
+  }
+
+  .services-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .services-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .service-tag {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue-bright);
+    background: var(--blue-dim);
+    border: 1px solid var(--border2);
+    padding: 6px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 60px 20px 50px; }
+    .content { padding: 0 20px 80px; }
+    .hero-stat-row { gap: 8px; }
+    .hero-stat { min-width: 130px; padding: 16px 20px; }
+    .meta-row { grid-template-columns: 130px 1fr; }
+    .execution-row { grid-template-columns: 1fr; }
+    .execution-label { border-right: none; border-bottom: 1px solid var(--border); }
+    .results-table { font-size: 12px; }
+    .results-table thead th, .results-table tbody td { padding: 12px 12px; }
+    .quote-block { padding: 28px 24px 28px 32px; }
+    .quote-text { font-size: 16px; }
+    .cta-block { padding: 40px 24px; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .timeline-track { grid-template-columns: 1fr; gap: 24px; }
+    .timeline-track::before { display: none; }
+    .challenge-text { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg class="nav-logo-icon" viewBox="0 0 40 40" fill="none">
+      <polygon points="20,2 38,12 38,28 20,38 2,28 2,12" fill="none" stroke="#2980FF" stroke-width="2"/>
+      <polygon points="20,8 32,15 32,25 20,32 8,25 8,15" fill="rgba(41,128,255,0.15)" stroke="#2980FF" stroke-width="1.5"/>
+      <text x="20" y="25" text-anchor="middle" fill="#2980FF" font-family="Arial" font-weight="900" font-size="12">SHD</text>
+    </svg>
+    <div>
+      <div class="nav-brand">SKY <span>HIGH</span></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">DESIGNS</div>
+    </div>
+  </div>
+  <div class="nav-tag">Case Study</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Website Redesign · Restaurant & Hospitality</div>
+  <h1 class="hero-title">
+    Ember <span>&</span> Oak<br>
+    <span>312%</span> More<br>Reservations
+  </h1>
+  <p class="hero-subtitle">How a struggling Dublin restaurant went from invisible online to fully booked every weekend — in 90 days.</p>
+
+  <div class="hero-stat-row">
+    <div class="hero-stat">
+      <div class="hero-stat-num">312%</div>
+      <div class="hero-stat-label">More Reservations</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">84→31%</div>
+      <div class="hero-stat-label">Bounce Rate</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">9.2→1.8s</div>
+      <div class="hero-stat-label">Page Load Speed</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">12wks</div>
+      <div class="hero-stat-label">Timeline</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- CHALLENGE CALLOUT -->
+  <div class="challenge-callout">
+    <div class="challenge-label">The Challenge</div>
+    <p class="challenge-text">A Dublin restaurant with a <span>5-star reputation</span> was losing bookings every day because its website made the business look like it had closed down.</p>
+  </div>
+
+  <!-- SECTION 1 — HEADER -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Project Overview</span>
+    </div>
+    <div class="section-rule"></div>
+
+    <div class="meta-table">
+      <div class="meta-row"><div class="meta-label">Client</div><div class="meta-value">Ember & Oak Restaurant</div></div>
+      <div class="meta-row"><div class="meta-label">Industry</div><div class="meta-value">Restaurant & Hospitality</div></div>
+      <div class="meta-row"><div class="meta-label">Project</div><div class="meta-value">Website Redesign</div></div>
+      <div class="meta-row"><div class="meta-label">Timeline</div><div class="meta-value">12 Weeks</div></div>
+      <div class="meta-row"><div class="meta-label">Key Result</div><div class="meta-value highlight">312% increase in online reservations within 90 days of launch</div></div>
+      <div class="meta-row"><div class="meta-label">Website</div><div class="meta-value"><a href="https://www.emberandoak.com" style="color:var(--blue);text-decoration:none;">www.emberandoak.com</a></div></div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 — INTRODUCTION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Introduction</span>
+    </div>
+    <div class="section-rule"></div>
+    <div class="section-tag">The Client</div>
+    <p>Ember & Oak is an independent fine dining restaurant based in Dublin, Ireland, specialising in seasonal Irish cuisine with a strong focus on locally sourced ingredients. Founded in 2019 by head chef Ronan Byrne, the restaurant quickly built a loyal local following through word of mouth and earned a strong reputation for quality and atmosphere.</p>
+    <p>Despite consistently positive reviews on Google and TripAdvisor, Ember & Oak was struggling to convert online interest into actual reservations. Potential customers were finding the restaurant, landing on the website, and leaving without booking.</p>
+    <p>When Ronan approached Sky High Designs, the problem was clear — the restaurant's existing website did not reflect the quality of the dining experience it was selling. Ronan came to SHD looking for a complete redesign that matched the quality of the food, made booking effortless, and gave Ember & Oak the online presence it deserved.</p>
+  </div>
+
+  <!-- SECTION 3 — BEFORE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">The Situation Before SHD</span>
+    </div>
+    <div class="section-rule"></div>
+    <div class="section-tag">The Before</div>
+    <p>Before engaging Sky High Designs, Ember & Oak's website was built on a basic Wix template that had not been updated since 2020. The site loaded in over 9 seconds on mobile — a critical problem given that more than 70% of restaurant searches happen on mobile devices.</p>
+    <p>The menu was a PDF download, the reservation system was a broken third-party widget, and the photography was taken on a phone camera. From an SEO perspective the site had no meaningful structure — no meta descriptions, no local SEO, and no Google Business Profile connection. Analytics showed a bounce rate of 84% and an average session duration under 30 seconds.</p>
+
+    <div class="problem-list">
+      <h4>Key Problems Identified</h4>
+      <ul>
+        <li>Website load speed: 9.2 seconds on mobile — benchmark is under 3 seconds</li>
+        <li>Bounce rate of 84% — visitors leaving without any interaction</li>
+        <li>No functional online reservation system — broken third party widget</li>
+        <li>Menu only accessible as a downloadable PDF — not mobile friendly</li>
+        <li>Photography did not reflect the quality of the dining experience</li>
+        <li>Zero local SEO presence — not appearing in Google local pack results</li>
+        <li>No mobile optimisation — site was built for desktop only</li>
+        <li>Google Business Profile disconnected from the website</li>
+      </ul>
+    </div>
+
+    <div class="screenshot-box">
+      <div class="icon">📸</div>
+      <p>Screenshot of Ember & Oak's original website — Wix template, 9.2 second load time, desktop only layout</p>
+    </div>
+
+    <div class="screenshot-box">
+      <div class="icon">📊</div>
+      <p>Google Analytics screenshot showing 84% bounce rate and 28-second average session duration</p>
+    </div>
+  </div>
+
+  <!-- SECTION 4 — METHODOLOGY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Methodology</span>
+    </div>
+    <div class="section-rule"></div>
+    <div class="section-tag">The Approach</div>
+    <p>Sky High Designs approached the project with a mobile-first redesign strategy built around one core objective — reducing the number of steps between a visitor landing on the site and completing a reservation. Every decision was made with this conversion goal in mind.</p>
+    <p>Rather than simply refreshing the visual design, SHD conducted a full audit before touching a single element — a technical performance audit, a content audit, a competitor analysis of five competing Dublin restaurants, and a review of Ember & Oak's Google Analytics data.</p>
+    <p>The agreed scope of work covered a full rebuild on WordPress with a custom theme, integration of a reliable reservation system, a mobile-optimised menu, professional photography direction, local SEO foundations, and Google Business Profile optimisation across a twelve week timeline with clear milestones at weeks four, eight, and twelve.</p>
+    <p>SHD also agreed with the client that the new site would be tested with real users before launch — a group of loyal customers were invited to navigate the site and complete a reservation, with their feedback incorporated before the go-live date.</p>
+  </div>
+
+  <!-- SECTION 5 — EXECUTION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Execution</span>
+    </div>
+    <div class="section-rule"></div>
+    <div class="section-tag">Project Type: Website Redesign</div>
+
+    <!-- TIMELINE -->
+    <div class="timeline-wrapper">
+      <div class="timeline-track">
+        <div class="timeline-step active">
+          <div class="timeline-dot">🔍</div>
+          <div class="timeline-week">Week 1–2</div>
+          <div class="timeline-phase">Discovery</div>
+          <div class="timeline-detail">Audit, competitor analysis, analytics review</div>
+        </div>
+        <div class="timeline-step active">
+          <div class="timeline-dot">📐</div>
+          <div class="timeline-week">Week 3–4</div>
+          <div class="timeline-phase">Strategy</div>
+          <div class="timeline-detail">Wireframes, sitemap, scope sign-off</div>
+        </div>
+        <div class="timeline-step active">
+          <div class="timeline-dot">⚙️</div>
+          <div class="timeline-week">Week 5–8</div>
+          <div class="timeline-phase">Build</div>
+          <div class="timeline-detail">WordPress build, Resy integration, photography</div>
+        </div>
+        <div class="timeline-step active">
+          <div class="timeline-dot">🧪</div>
+          <div class="timeline-week">Week 9–11</div>
+          <div class="timeline-phase">Test</div>
+          <div class="timeline-detail">QA, user testing, soft launch, UX fixes</div>
+        </div>
+        <div class="timeline-step active">
+          <div class="timeline-dot">🚀</div>
+          <div class="timeline-week">Week 12</div>
+          <div class="timeline-phase">Launch</div>
+          <div class="timeline-detail">DNS migration, go-live, performance monitoring</div>
+        </div>
+      </div>
+      <div class="timeline-milestone">
+        <div class="milestone-item"><div class="milestone-dot"></div>Week 4 — Milestone review with client</div>
+        <div class="milestone-item"><div class="milestone-dot"></div>Week 8 — Milestone review with client</div>
+        <div class="milestone-item"><div class="milestone-dot"></div>Week 12 — Launch</div>
+      </div>
+    </div>
+
+    <div style="height:32px"></div>
+
+    <div class="execution-table">
+      <div class="execution-header">
+        <div>Focus Area</div>
+        <div>What Was Done</div>
+      </div>
+      <div class="execution-row">
+        <div class="execution-label">What Was Kept</div>
+        <div class="execution-text">The brand name, colour palette, and core content around the restaurant's story and values were retained. The existing logo was preserved with minor refinements. Positive customer review quotes were carried over and featured more prominently on the new site.</div>
+      </div>
+      <div class="execution-row">
+        <div class="execution-label">What Was Changed</div>
+        <div class="execution-text">The entire site architecture was rebuilt from scratch. The Wix template was abandoned in favour of a custom WordPress build. Navigation was simplified from seven items to four. The reservation CTA was placed above the fold on every page. The PDF menu was replaced with a fully responsive inline menu with dietary filtering.</div>
+      </div>
+      <div class="execution-row">
+        <div class="execution-label">Fixing The Problems</div>
+        <div class="execution-text">Page speed was reduced from 9.2 seconds to 1.8 seconds through image compression, lazy loading, and hosting migration. A new reservation system — Resy — was integrated directly. Professional photography was directed by SHD with guidance on styling, lighting, and shot list.</div>
+      </div>
+      <div class="execution-row">
+        <div class="execution-label">Migration</div>
+        <div class="execution-text">All existing content was audited before migration. Blog posts and press mentions were redirected properly to avoid broken links. The old Wix site remained live until the new site passed all QA checks. DNS migration was handled overnight to minimise downtime.</div>
+      </div>
+      <div class="execution-row">
+        <div class="execution-label">Testing & QA</div>
+        <div class="execution-text">The site was tested across 12 devices and 4 browsers before launch. A soft launch was conducted with loyal customers who completed a reservation and provided feedback. Two UX issues identified during soft launch were resolved before the public launch date.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 — RESULTS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Results</span>
+    </div>
+    <div class="section-rule"></div>
+    <div class="section-tag">The Numbers</div>
+    <p>The results following launch exceeded the targets set at the start of the project. Within the first 90 days, online reservations increased by 312% compared to the same period in the previous year. The bounce rate dropped from 84% to 31%, and average session duration increased from 28 seconds to 3 minutes and 47 seconds.</p>
+    <p>Ember & Oak moved from page 4 to position 3 on page 1 of Google for 'fine dining Dublin' within six weeks of launch — driven by the local SEO foundations and Google Business Profile optimisation. Direct traffic from Google Maps increased by 218% in the same period.</p>
+    <p>Ronan reported that the kitchen was fully booked every Friday and Saturday evening for the first time since the restaurant opened — something he attributed directly to the ease of the new reservation system and the quality of the photography in converting browsers into bookers.</p>
+
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Before SHD</th>
+          <th>After SHD</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Page Load Speed (Mobile)</td><td>9.2 seconds</td><td>1.8 seconds</td></tr>
+        <tr><td>Bounce Rate</td><td>84%</td><td>31%</td></tr>
+        <tr><td>Avg. Session Duration</td><td>28 seconds</td><td>3 min 47 sec</td></tr>
+        <tr><td>Online Reservations (90 days)</td><td>Baseline period</td><td>+312%</td></tr>
+        <tr><td>Google Ranking — 'Fine Dining Dublin'</td><td>Page 4, Position 38</td><td>Page 1, Position 3</td></tr>
+        <tr><td>Google Maps Direct Traffic</td><td>Baseline period</td><td>+218%</td></tr>
+        <tr><td>Mobile Traffic Share</td><td>41% of visits</td><td>73% of visits</td></tr>
+      </tbody>
+    </table>
+
+    <div class="screenshot-box">
+      <div class="icon">📊</div>
+      <p>Google Analytics — 90 day comparison showing bounce rate drop from 84% to 31% and session duration increase</p>
+    </div>
+    <div class="screenshot-box">
+      <div class="icon">🔍</div>
+      <p>Google Search Console — ranking movement for 'fine dining Dublin' from position 38 to position 3</p>
+    </div>
+    <div class="screenshot-box">
+      <div class="icon">📸</div>
+      <p>Before and after side-by-side screenshot — old Wix site vs new SHD build on mobile</p>
+    </div>
+  </div>
+
+  <!-- SECTION 7 — TESTIMONIAL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Client Testimonial</span>
+    </div>
+    <div class="section-rule"></div>
+
+    <div class="quote-block">
+      <div class="quote-mark">"</div>
+      <p class="quote-text">I knew the old website was holding us back but I had no idea by how much until I saw the numbers after the new one launched. Within three months we went from barely filling the dining room midweek to being fully booked on weekends for the first time. The team at Sky High Designs understood what we were trying to do from the very first conversation — they did not just build us a website, they built us a business tool.</p>
+      <div class="quote-author">Ronan Byrne</div>
+      <div class="quote-role">Head Chef & Owner — Ember & Oak Restaurant &nbsp;|&nbsp; <a href="https://www.emberandoak.com">www.emberandoak.com</a></div>
+    </div>
+  </div>
+
+  <!-- SECTION 8 — LESSONS LEARNED -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Lessons Learned</span>
+    </div>
+    <div class="section-rule"></div>
+
+    <div class="lesson-card">
+      <div class="lesson-num">01</div>
+      <div class="lesson-content">
+        <h4>Fix the foundation before the design</h4>
+        <p>The visual redesign is rarely the most impactful part of the project. In this case the single biggest driver of improved results was reducing page load speed from 9.2 to 1.8 seconds. Visitors who would have bounced immediately were now staying long enough to book. Always fix the technical foundations first.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <div class="lesson-num">02</div>
+      <div class="lesson-content">
+        <h4>User test before launch — every time</h4>
+        <p>The soft launch with a real user testing group identified two UX friction points that would have cost bookings post-launch. Minor fixes in testing prevent major problems in production. Building a user test into every redesign project is now standard SHD practice.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <div class="lesson-num">03</div>
+      <div class="lesson-content">
+        <h4>Take more ownership of photography direction</h4>
+        <p>Photography was outsourced to a third party on this project with SHD providing only a brief. On future hospitality projects SHD will take a more hands-on role to ensure visual output is fully aligned with the design direction from day one — not adapted around photography after the fact.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9 — CTA -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">Work With Us</span>
+    </div>
+    <div class="section-rule"></div>
+  </div>
+
+  <!-- SERVICES USED -->
+  <div class="services-used">
+    <div class="services-label">Services Used on This Project</div>
+    <div class="services-tags">
+      <span class="service-tag">Website Redesign</span>
+      <span class="service-tag">UX / UI Design</span>
+      <span class="service-tag">WordPress Development</span>
+      <span class="service-tag">Local SEO</span>
+      <span class="service-tag">Performance Optimisation</span>
+      <span class="service-tag">Photography Direction</span>
+      <span class="service-tag">Google Business Profile</span>
+      <span class="service-tag">User Testing</span>
+    </div>
+  </div>
+
+  <div style="height:80px"></div>
+
+  <div class="cta-block">
+    <h2>Is Your Website<br><span>Costing You Customers?</span></h2>
+    <p>We will audit your existing site for free and show you exactly what is holding it back.</p>
+    <a href="https://skyhighdesigns.com" class="cta-btn">
+      Start Your Journey
+      <span class="cta-btn-arrow">→</span>
+    </a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer-note">
+  Sky High Designs &nbsp;|&nbsp; Case Study &nbsp;|&nbsp; Ember & Oak Restaurant &nbsp;|&nbsp; Website Redesign<br>
+  <span style="font-style:italic;opacity:0.5;">This is a fictional example produced for content writer reference purposes only</span>
+</div>
+
+</body>
+</html>
